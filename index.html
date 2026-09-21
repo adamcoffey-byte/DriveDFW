@@ -2,92 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>DriveDFW</title>
+  <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="top">
-    <div class="brand">
-      <span class="mark">DFW</span>
-      <div>
-        <h1>DriveDFW</h1>
-        <p class="tag">Live map · traffic · charge · parking</p>
-      </div>
+  <header class="nav">
+    <div class="nav-left">
+      <span class="logo">Drive<span>DFW</span></span>
+      <p class="nav-sub">Metroplex</p>
     </div>
-    <p class="status" id="clock">—</p>
+    <p class="clock" id="clock">—</p>
   </header>
 
   <main>
-    <section class="hero card">
-      <h2>Best route</h2>
-      <form id="trip-form">
-        <label>From<input name="from" required /></label>
-        <label>To<input name="to" placeholder="DFW Airport, downtown Fort Worth…" required /></label>
-        <div class="row">
-          <button type="submit">Plan</button>
+    <section class="hero">
+      <p class="eyebrow">Route</p>
+      <h1>Where are you going?</h1>
+      <form id="trip-form" class="sheet">
+        <label>
+          <span>From</span>
+          <input name="from" autocomplete="off" required />
+        </label>
+        <label>
+          <span>To</span>
+          <input name="to" placeholder="Airport, downtown, charger…" autocomplete="off" required />
+        </label>
+        <button type="submit" class="primary">Plan route</button>
+        <div class="nav-row">
           <button type="button" class="ghost" data-maps="google">Google</button>
           <button type="button" class="ghost" data-maps="apple">Apple</button>
           <button type="button" class="ghost" data-maps="waze">Waze</button>
-          <button type="button" class="ghost" data-maps="511">511DFW</button>
+          <button type="button" class="ghost" data-maps="511">511</button>
         </div>
       </form>
       <div id="plan" class="plan" hidden></div>
     </section>
 
-    <section class="card map-card">
-      <h3>Live map</h3>
-      <div id="map"></div>
-      <p class="hint">OpenStreetMap. Red = destinations, green = Tesla Superchargers. Traffic cameras live on 511DFW.</p>
+    <section class="block">
+      <div class="block-head">
+        <h2>Map</h2>
+        <p>Red destinations · Green Superchargers</p>
+      </div>
+      <div class="map-wrap">
+        <div id="map"></div>
+      </div>
     </section>
 
-    <section class="card">
-      <h3>Destinations</h3>
+    <section class="block">
+      <div class="block-head">
+        <h2>Destinations</h2>
+        <p>Tap to plan</p>
+      </div>
       <div class="chips" id="chips"></div>
     </section>
 
-    <section class="split">
-      <article class="card">
-        <h3>Tesla charge</h3>
-        <ul id="chargers" class="list clickable"></ul>
-        <p class="hint">Curated Metroplex Superchargers. Confirm stalls in the Tesla app.</p>
+    <section class="grid">
+      <article class="panel">
+        <div class="block-head">
+          <h2>Charge</h2>
+          <p>Tesla Superchargers</p>
+        </div>
+        <ul id="chargers" class="rows"></ul>
       </article>
-      <article class="card">
-        <h3>Airport parking</h3>
-        <ul id="parking" class="list"></ul>
-        <div class="row">
-          <a class="btn" href="https://www.dfwairport.com/park" target="_blank" rel="noopener">Prebook DFW parking</a>
-          <a class="btn ghost" href="https://www.dfwairport.com/park/remote/" target="_blank" rel="noopener">Remote rates</a>
+      <article class="panel">
+        <div class="block-head">
+          <h2>Airport parking</h2>
+          <p>DFW official lots</p>
+        </div>
+        <ul id="parking" class="rows dense"></ul>
+        <div class="nav-row">
+          <a class="primary slim" href="https://www.dfwairport.com/park" target="_blank" rel="noopener">Prebook</a>
+          <a class="ghost slim" href="https://www.dfwairport.com/park/remote/" target="_blank" rel="noopener">Remote</a>
         </div>
       </article>
     </section>
 
-    <section class="split">
-      <article class="card">
-        <h3>Live traffic</h3>
-        <p class="hint">Official North Texas feed.</p>
-        <div class="row">
-          <a class="btn" href="https://www.511dfw.org/" target="_blank" rel="noopener">Open 511DFW map</a>
-          <a class="btn ghost" href="https://www.511dfw.org/list/events/traffic" target="_blank" rel="noopener">Incidents</a>
+    <section class="grid">
+      <article class="panel">
+        <div class="block-head">
+          <h2>Traffic</h2>
+          <p>Live North Texas</p>
+        </div>
+        <div class="nav-row">
+          <a class="primary slim" href="https://www.511dfw.org/" target="_blank" rel="noopener">511DFW map</a>
+          <a class="ghost slim" href="https://www.511dfw.org/list/events/traffic" target="_blank" rel="noopener">Incidents</a>
         </div>
         <div id="corridors" class="corridors"></div>
       </article>
-      <article class="card">
-        <h3>Heat + charge</h3>
-        <ul id="heat" class="list"></ul>
+      <article class="panel">
+        <div class="block-head">
+          <h2>Climate</h2>
+          <p>Texas heat checklist</p>
+        </div>
+        <ul id="heat" class="rows plain"></ul>
       </article>
     </section>
 
-    <section class="card">
-      <h3>News · live</h3>
-      <ul id="news" class="list news"><li>Loading DFW traffic and airport headlines…</li></ul>
+    <section class="panel">
+      <div class="block-head">
+        <h2>News</h2>
+        <p>Traffic and airport</p>
+      </div>
+      <ul id="news" class="rows news"><li>Loading headlines…</li></ul>
     </section>
   </main>
 
   <footer>
-    <p>DriveDFW · adamcoffey-byte · Map © OSM · Parking rates change — verify on dfwairport.com</p>
+    <p>DriveDFW</p>
+    <p>Map © OpenStreetMap · Confirm parking on dfwairport.com</p>
   </footer>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>

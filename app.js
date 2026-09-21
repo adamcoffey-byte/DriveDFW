@@ -10,22 +10,26 @@
       timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit"
     });
   }
-  tick(); setInterval(tick, 30000);
+  tick();
+  setInterval(tick, 30000);
 
-  const map = L.map("map").setView(data.center, data.zoom);
+  const map = L.map("map", { zoomControl: true, attributionControl: true }).setView(data.center, data.zoom);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  const destIcon = L.divIcon({ className: "", html: "<div style=\"width:12px;height:12px;border-radius:50%;background:#f87171;border:2px solid #fff\"></div>" });
-  const chargeIcon = L.divIcon({ className: "", html: "<div style=\"width:12px;height:12px;border-radius:50%;background:#6ee7b7;border:2px solid #fff\"></div>" });
+  const pin = (color) => L.divIcon({
+    className: "",
+    iconSize: [16, 16],
+    html: "<div style=\"width:14px;height:14px;border-radius:50%;background:" + color + ";border:2px solid #fff;box-shadow:0 0 0 4px rgba(0,0,0,.25)\"></div>"
+  });
 
   data.places.forEach((p) => {
-    L.marker([p.lat, p.lng], { icon: destIcon }).addTo(map).bindPopup(p.name + "<br>" + p.note);
+    L.marker([p.lat, p.lng], { icon: pin("#e82127") }).addTo(map).bindPopup("<strong>" + p.name + "</strong><br>" + p.note);
   });
   data.chargers.forEach((c) => {
-    L.marker([c.lat, c.lng], { icon: chargeIcon }).addTo(map).bindPopup("<strong>" + c.name + "</strong><br>" + c.note);
+    L.marker([c.lat, c.lng], { icon: pin("#3ddc84") }).addTo(map).bindPopup("<strong>" + c.name + "</strong><br>" + c.note);
   });
 
   data.places.forEach((place) => {
@@ -36,30 +40,38 @@
       form.to.value = place.query;
       map.setView([place.lat, place.lng], 12);
       buildPlan();
+      planEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
     document.getElementById("chips").appendChild(btn);
   });
 
   data.chargers.forEach((c) => {
     const li = document.createElement("li");
-    li.textContent = c.name + " — " + c.note;
+    li.innerHTML = "<strong></strong><span></span>";
+    li.querySelector("strong").textContent = c.name.replace("Tesla Supercharger — ", "");
+    li.querySelector("span").textContent = c.note;
     li.addEventListener("click", () => {
       map.setView([c.lat, c.lng], 14);
       form.to.value = c.name + ", TX";
-      buildPlan(false);
+      buildPlan();
     });
     document.getElementById("chargers").appendChild(li);
   });
 
   data.parking.forEach((p) => {
     const li = document.createElement("li");
-    li.innerHTML = "<strong>" + p.name + "</strong> — " + p.rate + ". " + p.use;
+    li.innerHTML = "<strong></strong><span></span>";
+    li.querySelector("strong").textContent = p.name;
+    li.querySelector("span").textContent = p.rate + " · " + p.use;
     document.getElementById("parking").appendChild(li);
   });
+
   data.heatTips.forEach((t) => {
-    const li = document.createElement("li"); li.textContent = t;
+    const li = document.createElement("li");
+    li.textContent = t;
     document.getElementById("heat").appendChild(li);
   });
+
   data.corridors.forEach((c) => {
     const art = document.createElement("article");
     art.innerHTML = "<h4></h4><p></p>";
@@ -96,17 +108,21 @@
     const charge = nearestCharger(place);
     const note = place ? place.note : "Watch 183/121 and I-35W across Mid-Cities.";
     const park = /airport|dfw|love field/i.test(to)
-      ? " Parking: prebook on dfwairport.com/park if this is a flight. Terminal is closest; Remote is cheapest."
+      ? " Prebook parking at dfwairport.com/park. Terminal is closest; Remote is cheapest."
       : "";
     planEl.hidden = false;
     planEl.innerHTML =
-      "<p><strong>Best route now:</strong> open Google or Waze for live traffic, then check 511DFW for incidents.</p>" +
       "<p><strong>" + from + " → " + to + "</strong></p>" +
       "<p>" + note + park + "</p>" +
-      "<p>Nearest listed Supercharger: " + charge.name + ". Confirm in the Tesla app. Leave a 15% buffer.</p>";
+      "<p>Live traffic: Google or Waze. Incidents: 511DFW.</p>" +
+      "<p>Nearest Supercharger: " + charge.name.replace("Tesla Supercharger — ", "") + ". Confirm in the Tesla app. Leave a 15% buffer.</p>";
     if (place) map.setView([place.lat, place.lng], 12);
   }
-  form.addEventListener("submit", (e) => { e.preventDefault(); buildPlan(); });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    buildPlan();
+  });
   document.querySelectorAll("[data-maps]").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.getAttribute("data-maps") === "511" || (form.from.value && form.to.value)) {
@@ -137,6 +153,6 @@
       });
     })
     .catch(() => {
-      newsEl.innerHTML = "<li>News feed blocked in this browser. Use <a href=\"https://www.511dfw.org/\" target=\"_blank\" rel=\"noopener\">511DFW</a> and local news.</li>";
+      newsEl.innerHTML = "<li>Headlines unavailable here. Use <a href=\"https://www.511dfw.org/\" target=\"_blank\" rel=\"noopener\">511DFW</a>.</li>";
     });
 })();
