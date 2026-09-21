@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>DriveDFW</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
@@ -22,10 +21,16 @@
   <main>
     <section class="hero">
       <p class="eyebrow">Route</p>
-      <h1>Where are you going?</h1>
+      <h1>Choose start and destination</h1>
       <form id="trip-form" class="sheet">
-        <label><span>From</span><input name="from" autocomplete="off" required /></label>
-        <label><span>To</span><input name="to" placeholder="Airport, downtown, charger…" autocomplete="off" required /></label>
+        <label>
+          <span>Start</span>
+          <select name="from" id="from-select" required></select>
+        </label>
+        <label>
+          <span>Destination</span>
+          <select name="to" id="to-select" required></select>
+        </label>
         <button type="submit" class="primary">Plan route</button>
         <div class="nav-row">
           <button type="button" class="ghost" data-maps="google">Google</button>
@@ -38,10 +43,7 @@
     </section>
 
     <section class="panel weather" id="weather">
-      <div class="block-head">
-        <h2>Weather</h2>
-        <p>Euless · Open-Meteo</p>
-      </div>
+      <div class="block-head"><h2>Weather</h2><p>Euless · Open-Meteo</p></div>
       <div class="wx-now" id="wx-now">Loading forecast…</div>
       <div class="wx-days" id="wx-days"></div>
     </section>
@@ -52,13 +54,13 @@
     </section>
 
     <section class="block">
-      <div class="block-head"><h2>Destinations</h2><p>Tap to plan</p></div>
+      <div class="block-head"><h2>Quick destinations</h2><p>Sets Destination</p></div>
       <div class="chips" id="chips"></div>
     </section>
 
     <section class="grid">
       <article class="panel">
-        <div class="block-head"><h2>Charge</h2><p>Tesla Superchargers</p></div>
+        <div class="block-head"><h2>Charge</h2><p>Sets Destination</p></div>
         <ul id="chargers" class="rows"></ul>
       </article>
       <article class="panel">
@@ -91,11 +93,7 @@
       <ul id="news" class="rows news"><li>Loading headlines…</li></ul>
     </section>
   </main>
-
-  <footer>
-    <p>DriveDFW</p>
-    <p>Weather via Open-Meteo · Map © OSM</p>
-  </footer>
+  <footer><p>DriveDFW</p><p>Weather via Open-Meteo · Map © OSM</p></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
