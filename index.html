@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DriveDFW</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="mark">DFW</span>
+      <div>
+        <h1>DriveDFW</h1>
+        <p class="tag">Metroplex trip companion</p>
+      </div>
+    </div>
+    <p class="status" id="clock">—</p>
+  </header>
+
+  <main>
+    <section class="hero card">
+      <h2>Where are you headed?</h2>
+      <form id="trip-form">
+        <label>
+          From
+          <input name="from" value="Euless, TX" required />
+        </label>
+        <label>
+          To
+          <input name="to" placeholder="Downtown Fort Worth, DFW Airport, Plano…" required />
+        </label>
+        <button type="submit">Plan trip</button>
+      </form>
+      <p class="hint" id="plan-out">Pick a destination. DriveDFW will sketch a DFW-aware plan.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>Heat + charge</h3>
+        <p>Texas summer hits cabin and battery. Precondition before you leave. Arrive with a buffer, not empty.</p>
+      </article>
+      <article class="card">
+        <h3>Known pinch points</h3>
+        <ul>
+          <li>I-35W / I-30 mix near downtown Fort Worth</li>
+          <li>SH-183 / 121 through Mid-Cities</li>
+          <li>DFW Airport North / South entry at shift change</li>
+          <li>I-635 LBJ and Central Expressway</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Quick destinations</h3>
+        <div class="chips" id="chips"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>DriveDFW · adamcoffey-byte · Grok Bot project</p>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
