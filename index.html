@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DriveDFW</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,7 +13,7 @@
       <span class="mark">DFW</span>
       <div>
         <h1>DriveDFW</h1>
-        <p class="tag">Metroplex trip companion</p>
+        <p class="tag">Live map · traffic · charge · parking</p>
       </div>
     </div>
     <p class="status" id="clock">—</p>
@@ -20,17 +21,25 @@
 
   <main>
     <section class="hero card">
-      <h2>Plan a trip</h2>
+      <h2>Best route</h2>
       <form id="trip-form">
-        <label>From<input name="from" autocomplete="off" required /></label>
-        <label>To<input name="to" placeholder="DFW Airport, downtown Fort Worth…" autocomplete="off" required /></label>
+        <label>From<input name="from" required /></label>
+        <label>To<input name="to" placeholder="DFW Airport, downtown Fort Worth…" required /></label>
         <div class="row">
-          <button type="submit">Build plan</button>
-          <button type="button" class="ghost" id="maps-google">Google Maps</button>
-          <button type="button" class="ghost" id="maps-apple">Apple Maps</button>
+          <button type="submit">Plan</button>
+          <button type="button" class="ghost" data-maps="google">Google</button>
+          <button type="button" class="ghost" data-maps="apple">Apple</button>
+          <button type="button" class="ghost" data-maps="waze">Waze</button>
+          <button type="button" class="ghost" data-maps="511">511DFW</button>
         </div>
       </form>
       <div id="plan" class="plan" hidden></div>
+    </section>
+
+    <section class="card map-card">
+      <h3>Live map</h3>
+      <div id="map"></div>
+      <p class="hint">OpenStreetMap. Red = destinations, green = Tesla Superchargers. Traffic cameras live on 511DFW.</p>
     </section>
 
     <section class="card">
@@ -40,9 +49,29 @@
 
     <section class="split">
       <article class="card">
-        <h3>Saved trips</h3>
-        <ul id="saved" class="list"></ul>
-        <p class="hint" id="saved-empty">No saved trips yet.</p>
+        <h3>Tesla charge</h3>
+        <ul id="chargers" class="list clickable"></ul>
+        <p class="hint">Curated Metroplex Superchargers. Confirm stalls in the Tesla app.</p>
+      </article>
+      <article class="card">
+        <h3>Airport parking</h3>
+        <ul id="parking" class="list"></ul>
+        <div class="row">
+          <a class="btn" href="https://www.dfwairport.com/park" target="_blank" rel="noopener">Prebook DFW parking</a>
+          <a class="btn ghost" href="https://www.dfwairport.com/park/remote/" target="_blank" rel="noopener">Remote rates</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <h3>Live traffic</h3>
+        <p class="hint">Official North Texas feed.</p>
+        <div class="row">
+          <a class="btn" href="https://www.511dfw.org/" target="_blank" rel="noopener">Open 511DFW map</a>
+          <a class="btn ghost" href="https://www.511dfw.org/list/events/traffic" target="_blank" rel="noopener">Incidents</a>
+        </div>
+        <div id="corridors" class="corridors"></div>
       </article>
       <article class="card">
         <h3>Heat + charge</h3>
@@ -51,14 +80,15 @@
     </section>
 
     <section class="card">
-      <h3>Corridors</h3>
-      <div id="corridors" class="corridors"></div>
+      <h3>News · live</h3>
+      <ul id="news" class="list news"><li>Loading DFW traffic and airport headlines…</li></ul>
     </section>
   </main>
 
   <footer>
-    <p>DriveDFW · adamcoffey-byte · local plans only — not live traffic</p>
+    <p>DriveDFW · adamcoffey-byte · Map © OSM · Parking rates change — verify on dfwairport.com</p>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>

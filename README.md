@@ -1,19 +1,19 @@
 # DriveDFW
 
-Dallas–Fort Worth driving companion. Grok Bot project on `adamcoffey-byte/DriveDFW`.
+Dallas–Fort Worth driving companion.
 
-Open `index.html` in a browser, or:
+Open `index.html` in a browser (needs internet for the map and news).
 
 ```bash
 npx serve .
 ```
 
-## What works now
+## Live pieces
 
-- Plan a trip from Euless (or anywhere) to DFW destinations
-- Saved trips in the browser (`localStorage`)
-- Corridor notes for 183/121, I-35W, I-30, LBJ, Central
-- Heat / charge checklist for Texas summer driving
-- Open the route in Google Maps or Apple Maps
+- Map: OpenStreetMap (Leaflet)
+- Best route: Google, Apple, Waze, 511DFW
+- Traffic + news: 511DFW + Google News RSS (DFW traffic / DFW Airport)
+- Tesla charge: curated Metroplex Supercharger list (not Tesla live occupancy)
+- Airport parking: official DFW products + prebook / availability links
 
-No backend yet. Live traffic and charger status come later.
+True live occupancy and Google traffic tiles need API keys. Those go in later.

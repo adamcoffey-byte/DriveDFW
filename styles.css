@@ -1,64 +1,60 @@
 :root {
-  --bg: #0e1116;
-  --card: #171c24;
-  --ink: #eef2f6;
-  --muted: #9aa6b2;
-  --accent: #3dd6c6;
-  --line: #2a3340;
+  --bg: #0e1116; --card: #171c24; --ink: #eef2f6; --muted: #9aa6b2;
+  --accent: #3dd6c6; --line: #2a3340; --charge: #6ee7b7; --dest: #f87171;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
   background: radial-gradient(1200px 700px at 8% -20%, #1b2a28, var(--bg));
-  color: var(--ink);
-  min-height: 100vh;
+  color: var(--ink); min-height: 100vh;
 }
-.top, footer, main { max-width: 920px; margin: 0 auto; padding: 1.15rem 1.2rem; }
+.top, footer, main { max-width: 980px; margin: 0 auto; padding: 1.1rem 1.15rem; }
 .top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .brand { display: flex; gap: 0.85rem; align-items: center; }
 .mark {
   background: var(--accent); color: #06241f; font-weight: 800;
-  letter-spacing: 0.04em; padding: 0.55rem 0.6rem; border-radius: 0.6rem;
+  padding: 0.55rem 0.6rem; border-radius: 0.6rem;
 }
 h1 { margin: 0; font-size: 1.3rem; }
 h2, h3 { margin: 0 0 0.75rem; }
-.tag, .status, .hint, footer { color: var(--muted); }
+.tag, .status, .hint, footer { color: var(--muted); font-size: 0.92rem; }
 .card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: 1.1rem 1.2rem;
-  margin-bottom: 0.85rem;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 1rem; padding: 1.05rem 1.15rem; margin-bottom: 0.85rem;
 }
-form { display: grid; gap: 0.7rem; }
+#map { height: 360px; border-radius: 0.75rem; border: 1px solid var(--line); }
+form { display: grid; gap: 0.65rem; }
 label { display: grid; gap: 0.3rem; font-size: 0.85rem; color: var(--muted); }
 input {
   background: #10151c; border: 1px solid var(--line); color: var(--ink);
   border-radius: 0.55rem; padding: 0.7rem 0.8rem; font-size: 1rem;
 }
-.row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-button {
+.row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+button, a.btn {
   background: var(--accent); color: #06241f; border: 0; border-radius: 0.6rem;
-  padding: 0.7rem 0.95rem; font-weight: 700; cursor: pointer;
+  padding: 0.65rem 0.9rem; font-weight: 700; cursor: pointer;
+  text-decoration: none; display: inline-block; font-size: 0.92rem;
 }
-button.ghost {
+button.ghost, a.btn.ghost {
   background: #10151c; color: var(--ink); border: 1px solid var(--line);
 }
-.chips, .corridors { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.chips button, .corridors article {
-  background: #10151c; color: var(--ink); border: 1px solid var(--line);
-  font-weight: 600; font-size: 0.85rem;
-}
-.corridors article { padding: 0.7rem 0.8rem; border-radius: 0.7rem; flex: 1 1 240px; }
-.corridors h4 { margin: 0 0 0.3rem; font-size: 0.9rem; }
-.corridors p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chips button { background: #10151c; color: var(--ink); border: 1px solid var(--line); font-size: 0.85rem; }
 .split { display: grid; gap: 0.85rem; }
-@media (min-width: 760px) { .split { grid-template-columns: 1fr 1fr; } }
-.list { margin: 0; padding-left: 1.1rem; color: var(--muted); }
-.list li { margin: 0.35rem 0; }
-.plan {
-  margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--line);
+@media (min-width: 800px) { .split { grid-template-columns: 1fr 1fr; } }
+.list { margin: 0 0 0.7rem; padding-left: 1.1rem; color: var(--muted); }
+.list li { margin: 0.4rem 0; }
+.list.clickable li { cursor: pointer; }
+.list.clickable li:hover { color: var(--ink); }
+.news a { color: var(--accent); }
+.corridors { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.corridors article {
+  flex: 1 1 200px; background: #10151c; border: 1px solid var(--line);
+  border-radius: 0.7rem; padding: 0.65rem 0.75rem;
 }
+.corridors h4 { margin: 0 0 0.25rem; font-size: 0.88rem; }
+.corridors p { margin: 0; color: var(--muted); font-size: 0.82rem; }
+.plan { margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid var(--line); }
 .plan strong { color: var(--accent); }
 footer { padding-bottom: 2rem; }
