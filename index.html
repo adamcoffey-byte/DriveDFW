@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>DriveDFW</title>
-  <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -25,14 +24,8 @@
       <p class="eyebrow">Route</p>
       <h1>Where are you going?</h1>
       <form id="trip-form" class="sheet">
-        <label>
-          <span>From</span>
-          <input name="from" autocomplete="off" required />
-        </label>
-        <label>
-          <span>To</span>
-          <input name="to" placeholder="Airport, downtown, charger…" autocomplete="off" required />
-        </label>
+        <label><span>From</span><input name="from" autocomplete="off" required /></label>
+        <label><span>To</span><input name="to" placeholder="Airport, downtown, charger…" autocomplete="off" required /></label>
         <button type="submit" class="primary">Plan route</button>
         <div class="nav-row">
           <button type="button" class="ghost" data-maps="google">Google</button>
@@ -44,37 +37,32 @@
       <div id="plan" class="plan" hidden></div>
     </section>
 
-    <section class="block">
+    <section class="panel weather" id="weather">
       <div class="block-head">
-        <h2>Map</h2>
-        <p>Red destinations · Green Superchargers</p>
+        <h2>Weather</h2>
+        <p>Euless · Open-Meteo</p>
       </div>
-      <div class="map-wrap">
-        <div id="map"></div>
-      </div>
+      <div class="wx-now" id="wx-now">Loading forecast…</div>
+      <div class="wx-days" id="wx-days"></div>
     </section>
 
     <section class="block">
-      <div class="block-head">
-        <h2>Destinations</h2>
-        <p>Tap to plan</p>
-      </div>
+      <div class="block-head"><h2>Map</h2><p>Red destinations · Green Superchargers</p></div>
+      <div class="map-wrap"><div id="map"></div></div>
+    </section>
+
+    <section class="block">
+      <div class="block-head"><h2>Destinations</h2><p>Tap to plan</p></div>
       <div class="chips" id="chips"></div>
     </section>
 
     <section class="grid">
       <article class="panel">
-        <div class="block-head">
-          <h2>Charge</h2>
-          <p>Tesla Superchargers</p>
-        </div>
+        <div class="block-head"><h2>Charge</h2><p>Tesla Superchargers</p></div>
         <ul id="chargers" class="rows"></ul>
       </article>
       <article class="panel">
-        <div class="block-head">
-          <h2>Airport parking</h2>
-          <p>DFW official lots</p>
-        </div>
+        <div class="block-head"><h2>Airport parking</h2><p>DFW official lots</p></div>
         <ul id="parking" class="rows dense"></ul>
         <div class="nav-row">
           <a class="primary slim" href="https://www.dfwairport.com/park" target="_blank" rel="noopener">Prebook</a>
@@ -85,10 +73,7 @@
 
     <section class="grid">
       <article class="panel">
-        <div class="block-head">
-          <h2>Traffic</h2>
-          <p>Live North Texas</p>
-        </div>
+        <div class="block-head"><h2>Traffic</h2><p>Live North Texas</p></div>
         <div class="nav-row">
           <a class="primary slim" href="https://www.511dfw.org/" target="_blank" rel="noopener">511DFW map</a>
           <a class="ghost slim" href="https://www.511dfw.org/list/events/traffic" target="_blank" rel="noopener">Incidents</a>
@@ -96,28 +81,21 @@
         <div id="corridors" class="corridors"></div>
       </article>
       <article class="panel">
-        <div class="block-head">
-          <h2>Climate</h2>
-          <p>Texas heat checklist</p>
-        </div>
+        <div class="block-head"><h2>Climate</h2><p>Texas heat checklist</p></div>
         <ul id="heat" class="rows plain"></ul>
       </article>
     </section>
 
     <section class="panel">
-      <div class="block-head">
-        <h2>News</h2>
-        <p>Traffic and airport</p>
-      </div>
+      <div class="block-head"><h2>News</h2><p>Traffic and airport</p></div>
       <ul id="news" class="rows news"><li>Loading headlines…</li></ul>
     </section>
   </main>
 
   <footer>
     <p>DriveDFW</p>
-    <p>Map © OpenStreetMap · Confirm parking on dfwairport.com</p>
+    <p>Weather via Open-Meteo · Map © OSM</p>
   </footer>
-
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>

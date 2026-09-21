@@ -3,6 +3,7 @@
   const form = document.getElementById("trip-form");
   const planEl = document.getElementById("plan");
   form.from.value = data.homeDefault;
+  let wxNow = null;
 
   const clock = document.getElementById("clock");
   function tick() {
@@ -10,54 +11,65 @@
       timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit"
     });
   }
-  tick();
-  setInterval(tick, 30000);
+  tick(); setInterval(tick, 30000);
 
-  const map = L.map("map", { zoomControl: true, attributionControl: true }).setView(data.center, data.zoom);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
+  function wxLabel(code) {
+    if (code === 0) return "Clear";
+    if (code <= 3) return "Partly cloudy";
+    if (code <= 48) return "Fog";
+    if (code <= 57) return "Drizzle";
+    if (code <= 67) return "Rain";
+    if (code <= 77) return "Snow";
+    if (code <= 82) return "Showers";
+    if (code <= 86) return "Snow showers";
+    return "Storms";
+  }
 
-  const pin = (color) => L.divIcon({
-    className: "",
-    iconSize: [16, 16],
-    html: "<div style=\"width:14px;height:14px;border-radius:50%;background:" + color + ";border:2px solid #fff;box-shadow:0 0 0 4px rgba(0,0,0,.25)\"></div>"
-  });
+  const wxUrl = "https://api.open-meteo.com/v1/forecast?latitude=32.837&longitude=-97.082&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FChicago&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=7";
+  fetch(wxUrl)
+    .then((r) => r.json())
+    .then((wx) => {
+      const c = wx.current;
+      wxNow = c;
+      document.getElementById("wx-now").innerHTML =
+        "<div class=\"wx-temp\">" + Math.round(c.temperature_2m) + "°</div>" +
+        "<div class=\"wx-meta\"><strong>" + wxLabel(c.weather_code) + "</strong><br>Wind " +
+        Math.round(c.wind_speed_10m) + " mph · Humidity " + Math.round(c.relative_humidity_2m) + "%</div>";
+      const days = document.getElementById("wx-days");
+      days.innerHTML = "";
+      wx.daily.time.forEach((day, i) => {
+        const el = document.createElement("div");
+        el.className = "wx-day";
+        const name = new Date(day + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", timeZone: "America/Chicago" });
+        el.innerHTML = "<b>" + name + "</b><em>" + Math.round(wx.daily.temperature_2m_max[i]) + "°</em><span>" +
+          Math.round(wx.daily.temperature_2m_min[i]) + "° · " + wx.daily.precipitation_probability_max[i] + "%</span>";
+        days.appendChild(el);
+      });
+    })
+    .catch(() => {
+      document.getElementById("wx-now").textContent = "Forecast unavailable. Try again on Wi-Fi.";
+    });
 
-  data.places.forEach((p) => {
-    L.marker([p.lat, p.lng], { icon: pin("#e82127") }).addTo(map).bindPopup("<strong>" + p.name + "</strong><br>" + p.note);
-  });
-  data.chargers.forEach((c) => {
-    L.marker([c.lat, c.lng], { icon: pin("#3ddc84") }).addTo(map).bindPopup("<strong>" + c.name + "</strong><br>" + c.note);
-  });
+  const map = L.map("map").setView(data.center, data.zoom);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
+  const pin = (color) => L.divIcon({ className: "", iconSize: [16, 16], html: "<div style=\"width:14px;height:14px;border-radius:50%;background:" + color + ";border:2px solid #fff\"></div>" });
+  data.places.forEach((p) => L.marker([p.lat, p.lng], { icon: pin("#e82127") }).addTo(map).bindPopup("<strong>" + p.name + "</strong><br>" + p.note));
+  data.chargers.forEach((c) => L.marker([c.lat, c.lng], { icon: pin("#3ddc84") }).addTo(map).bindPopup("<strong>" + c.name + "</strong><br>" + c.note));
 
   data.places.forEach((place) => {
     const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = place.name;
-    btn.addEventListener("click", () => {
-      form.to.value = place.query;
-      map.setView([place.lat, place.lng], 12);
-      buildPlan();
-      planEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
+    btn.type = "button"; btn.textContent = place.name;
+    btn.addEventListener("click", () => { form.to.value = place.query; map.setView([place.lat, place.lng], 12); buildPlan(); });
     document.getElementById("chips").appendChild(btn);
   });
-
   data.chargers.forEach((c) => {
     const li = document.createElement("li");
     li.innerHTML = "<strong></strong><span></span>";
     li.querySelector("strong").textContent = c.name.replace("Tesla Supercharger — ", "");
     li.querySelector("span").textContent = c.note;
-    li.addEventListener("click", () => {
-      map.setView([c.lat, c.lng], 14);
-      form.to.value = c.name + ", TX";
-      buildPlan();
-    });
+    li.addEventListener("click", () => { map.setView([c.lat, c.lng], 14); form.to.value = c.name + ", TX"; buildPlan(); });
     document.getElementById("chargers").appendChild(li);
   });
-
   data.parking.forEach((p) => {
     const li = document.createElement("li");
     li.innerHTML = "<strong></strong><span></span>";
@@ -65,18 +77,10 @@
     li.querySelector("span").textContent = p.rate + " · " + p.use;
     document.getElementById("parking").appendChild(li);
   });
-
-  data.heatTips.forEach((t) => {
-    const li = document.createElement("li");
-    li.textContent = t;
-    document.getElementById("heat").appendChild(li);
-  });
-
+  data.heatTips.forEach((t) => { const li = document.createElement("li"); li.textContent = t; document.getElementById("heat").appendChild(li); });
   data.corridors.forEach((c) => {
-    const art = document.createElement("article");
-    art.innerHTML = "<h4></h4><p></p>";
-    art.querySelector("h4").textContent = c.title;
-    art.querySelector("p").textContent = c.body;
+    const art = document.createElement("article"); art.innerHTML = "<h4></h4><p></p>";
+    art.querySelector("h4").textContent = c.title; art.querySelector("p").textContent = c.body;
     document.getElementById("corridors").appendChild(art);
   });
 
@@ -107,34 +111,26 @@
     const place = findPlace(to);
     const charge = nearestCharger(place);
     const note = place ? place.note : "Watch 183/121 and I-35W across Mid-Cities.";
-    const park = /airport|dfw|love field/i.test(to)
-      ? " Prebook parking at dfwairport.com/park. Terminal is closest; Remote is cheapest."
-      : "";
+    const park = /airport|dfw|love field/i.test(to) ? " Prebook parking at dfwairport.com/park." : "";
+    const heat = wxNow && wxNow.temperature_2m >= 90 ? " Cabin will be hot — precondition and leave a 15% buffer." : " Leave a 15% charge buffer.";
     planEl.hidden = false;
     planEl.innerHTML =
       "<p><strong>" + from + " → " + to + "</strong></p>" +
-      "<p>" + note + park + "</p>" +
+      "<p>" + note + park + heat + "</p>" +
       "<p>Live traffic: Google or Waze. Incidents: 511DFW.</p>" +
-      "<p>Nearest Supercharger: " + charge.name.replace("Tesla Supercharger — ", "") + ". Confirm in the Tesla app. Leave a 15% buffer.</p>";
+      "<p>Nearest Supercharger: " + charge.name.replace("Tesla Supercharger — ", "") + ".</p>";
     if (place) map.setView([place.lat, place.lng], 12);
   }
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    buildPlan();
-  });
+  form.addEventListener("submit", (e) => { e.preventDefault(); buildPlan(); });
   document.querySelectorAll("[data-maps]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (btn.getAttribute("data-maps") === "511" || (form.from.value && form.to.value)) {
-        window.open(mapsUrl(btn.getAttribute("data-maps")), "_blank");
-      }
+      if (btn.getAttribute("data-maps") === "511" || (form.from.value && form.to.value)) window.open(mapsUrl(btn.getAttribute("data-maps")), "_blank");
     });
   });
 
   const newsEl = document.getElementById("news");
-  const feed = "https://news.google.com/rss/search?q=DFW+traffic+OR+%22DFW+Airport%22+parking+OR+%22North+Texas%22+highway&hl=en-US&gl=US&ceid=US:en";
-  const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(feed);
-  fetch(proxy)
+  const feed = "https://news.google.com/rss/search?q=DFW+traffic+OR+%22DFW+Airport%22&hl=en-US&gl=US&ceid=US:en";
+  fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(feed))
     .then((r) => r.text())
     .then((xml) => {
       const doc = new DOMParser().parseFromString(xml, "text/xml");
@@ -145,14 +141,10 @@
         const li = document.createElement("li");
         const a = document.createElement("a");
         a.href = item.querySelector("link")?.textContent || "#";
-        a.target = "_blank";
-        a.rel = "noopener";
+        a.target = "_blank"; a.rel = "noopener";
         a.textContent = item.querySelector("title")?.textContent || "Headline";
-        li.appendChild(a);
-        newsEl.appendChild(li);
+        li.appendChild(a); newsEl.appendChild(li);
       });
     })
-    .catch(() => {
-      newsEl.innerHTML = "<li>Headlines unavailable here. Use <a href=\"https://www.511dfw.org/\" target=\"_blank\" rel=\"noopener\">511DFW</a>.</li>";
-    });
+    .catch(() => { newsEl.innerHTML = "<li>Use <a href=\"https://www.511dfw.org/\" target=\"_blank\" rel=\"noopener\">511DFW</a> for live conditions.</li>"; });
 })();
