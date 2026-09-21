@@ -1,14 +1,6 @@
 # DriveDFW
 
-Grok Bot project for a Dallas–Fort Worth driving companion.
-
-Repo: https://github.com/adamcoffey-byte/DriveDFW
-
-## What this is
-
-Starter app the Grok Bot named **DriveDFW** can build on. Local-first UI for DFW trips: route notes, heat/charging reminders, and Metroplex landmarks.
-
-## Run locally
+Dallas–Fort Worth driving companion. Grok Bot project on `adamcoffey-byte/DriveDFW`.
 
 Open `index.html` in a browser, or:
 
@@ -16,8 +8,12 @@ Open `index.html` in a browser, or:
 npx serve .
 ```
 
-## Next for Grok Bot
+## What works now
 
-1. Connect GitHub plugin / PAT to `adamcoffey-byte/DriveDFW`.
-2. Work on a branch, then open a PR. Do not push straight to `main` for large changes.
-3. Tell the bot the exact repo: `adamcoffey-byte/DriveDFW`.
+- Plan a trip from Euless (or anywhere) to DFW destinations
+- Saved trips in the browser (`localStorage`)
+- Corridor notes for 183/121, I-35W, I-30, LBJ, Central
+- Heat / charge checklist for Texas summer driving
+- Open the route in Google Maps or Apple Maps
+
+No backend yet. Live traffic and charger status come later.

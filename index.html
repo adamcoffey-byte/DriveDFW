@@ -20,45 +20,46 @@
 
   <main>
     <section class="hero card">
-      <h2>Where are you headed?</h2>
+      <h2>Plan a trip</h2>
       <form id="trip-form">
-        <label>
-          From
-          <input name="from" value="Euless, TX" required />
-        </label>
-        <label>
-          To
-          <input name="to" placeholder="Downtown Fort Worth, DFW Airport, Plano…" required />
-        </label>
-        <button type="submit">Plan trip</button>
+        <label>From<input name="from" autocomplete="off" required /></label>
+        <label>To<input name="to" placeholder="DFW Airport, downtown Fort Worth…" autocomplete="off" required /></label>
+        <div class="row">
+          <button type="submit">Build plan</button>
+          <button type="button" class="ghost" id="maps-google">Google Maps</button>
+          <button type="button" class="ghost" id="maps-apple">Apple Maps</button>
+        </div>
       </form>
-      <p class="hint" id="plan-out">Pick a destination. DriveDFW will sketch a DFW-aware plan.</p>
+      <div id="plan" class="plan" hidden></div>
     </section>
 
-    <section class="grid">
+    <section class="card">
+      <h3>Destinations</h3>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <h3>Saved trips</h3>
+        <ul id="saved" class="list"></ul>
+        <p class="hint" id="saved-empty">No saved trips yet.</p>
+      </article>
       <article class="card">
         <h3>Heat + charge</h3>
-        <p>Texas summer hits cabin and battery. Precondition before you leave. Arrive with a buffer, not empty.</p>
+        <ul id="heat" class="list"></ul>
       </article>
-      <article class="card">
-        <h3>Known pinch points</h3>
-        <ul>
-          <li>I-35W / I-30 mix near downtown Fort Worth</li>
-          <li>SH-183 / 121 through Mid-Cities</li>
-          <li>DFW Airport North / South entry at shift change</li>
-          <li>I-635 LBJ and Central Expressway</li>
-        </ul>
-      </article>
-      <article class="card">
-        <h3>Quick destinations</h3>
-        <div class="chips" id="chips"></div>
-      </article>
+    </section>
+
+    <section class="card">
+      <h3>Corridors</h3>
+      <div id="corridors" class="corridors"></div>
     </section>
   </main>
 
   <footer>
-    <p>DriveDFW · adamcoffey-byte · Grok Bot project</p>
+    <p>DriveDFW · adamcoffey-byte · local plans only — not live traffic</p>
   </footer>
+  <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
